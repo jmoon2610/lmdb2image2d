@@ -11,4 +11,4 @@ export OPENCV_INCDIR=/usr/local/include
 export LARCV_INCDIR=/home/taritree/working/larbys/LArCV/build/include
 export LARCV_LIBDIR=/home/taritree/working/larbys/LArCV/build/lib
 export BOOST_LIBDIR=/usr/lib/x86_64-linux-gnu
-export LD_LIBRARY_PATH=.:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=.:${LD_LIBRARY_PATH}:${LARCV_LIBDIR}

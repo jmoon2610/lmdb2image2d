@@ -45,8 +45,9 @@ int main( int nargs, char** argv ) {
   std::string FLAGS_backend = "lmdb";
   bool util_makecut   = false;
 
-  int nprocess = 10;
+  int nprocess = -1;
   int crop_timepad = 10;
+  int fudge_offset = -1;
 
   boost::scoped_ptr<caffe::db::DB> db(caffe::db::GetDB(FLAGS_backend));
   db->Open( input_lmdb.c_str(), caffe::db::READ );
@@ -93,12 +94,12 @@ int main( int nargs, char** argv ) {
     datum.ParseFromString( cursor->value() );
     std::cout << "[ label " << datum.label() << "] key=" << cursor->key() << " " << datum.width() << " x " << datum.height() << " x " << datum.channels() << std::endl;
 
-    auto event_images = (larcv::EventImage2D*)ioman.get_data( larcv::kProductImage2D, "tpc_12ch" );
-    auto event_roi    = (larcv::EventROI*)ioman.get_data( larcv::kProductROI, "tpc_12ch" );
+    auto event_images = (larcv::EventImage2D*)ioman.get_data( larcv::kProductImage2D, "tpc_12ch_mean" );
+    auto event_roi    = (larcv::EventROI*)ioman.get_data( larcv::kProductROI, "tpc_12ch_mean" );
 
 
     const std::string& data = datum.data();
-    std::vector<char> vec_data( data.c_str(), data.c_str()+data.size());
+    std::vector<unsigned char> vec_data( data.c_str(), data.c_str()+data.size());
     int height = datum.height();
     int cropped_height = height-2*crop_timepad;
     int width = datum.width();
@@ -110,8 +111,9 @@ int main( int nargs, char** argv ) {
       larcv::Image2D img2d( meta );
       for (int h=0; h<cropped_height; h++) {
 	for (int w=0; w<width; w++) {
-	  int index = (c*(height) + (h+crop_timepad))*width + w;
-	  unsigned int val = static_cast<unsigned short>( vec_data.at(index) );
+	  //int index = (c*(height) + (height-crop_timepad-h))*width + w;
+	  int index = (c*(height) + (crop_timepad+h+fudge_offset))*width + w;
+	  int val = vec_data.at(index);
 	  img2d.set_pixel( w, h, (float)val );
 	}
       }

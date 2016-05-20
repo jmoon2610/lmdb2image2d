@@ -48,7 +48,7 @@ endif
 LDLIBS += -L$(CAFFE_LIBDIR)  -lcaffe
 #LDLIBS += $(ROOTLIBS) -L$(LMDB_LIBDIR) -llmdb -lleveldb -L$(PROTOBUF_LIBDIR) -lprotobuf -lglog $(OPENCV_LIBS)
 LDLIBS += $(ROOTLIBS) -L$(LMDB_LIBDIR) -llmdb -lleveldb -L$(PROTOBUF_LIBDIR) -lprotobuf -lglog 
-LDLIBS += -L$(LARCV_LIBDIR) -lLArCVDataFormat
+LDLIBS += -L$(LARCV_LIBDIR) -lLArCVDataFormat -lLArCVBase
 
 CCSRC = $(wildcard src/*.cc)
 COBJS = $(addprefix .obj/, $(notdir $(CCSRC:.cc=.o)))
